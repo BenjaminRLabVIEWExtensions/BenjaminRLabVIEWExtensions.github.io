@@ -16,5 +16,5 @@ Here the list of the editor features in LabVIEW that could be customized.
 - [**Create Project** dialog box](https://knowledge.ni.com/KnowledgeArticleDetails?id=kA03q000000x1k8CAA&l=en-CA).
 - [**Channel** templates](https://forums.ni.com/t5/LabVIEW-Channel-Wires/Getting-Started-With-Channel-Wires/m-p/3505658).
 - [Custom **Probes**](https://zone.ni.com/reference/en-XX/help/371361P-01/lvhowto/creating_custom_probes/).
-- [**Development Environment *allback VIs**](https://labviewwiki.org/wiki/Development_Environment_Event_Callback_VIs).
+- [**Development Environment Callback VIs**](https://labviewwiki.org/wiki/Development_Environment_Event_Callback_VIs).
 - [**LabVIEW Project Providers**](https://forums.ni.com/t5/LabVIEW-Project-Providers/gh-p/bymqyodmkc).
