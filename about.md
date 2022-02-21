@@ -1,4 +1,4 @@
-# ![SimpleDocumentCreationExample](https://github.com/BenjaminRLabVIEWExtensions/BenjaminRLabVIEWExtensions.github.io/blob/9cb33796f3e335c8b20a3ec9b04d07571f4fb322/LabVIEW_Extensions_Small.png?raw=true) [BenjaminR's LabVIEW Extensions](https://benji667.github.io/LabVIEW_NPOI/about)
+# ![SimpleDocumentCreationExample](https://github.com/BenjaminRLabVIEWExtensions/BenjaminRLabVIEWExtensions.github.io/blob/0378ea26009b234c49e65a4d3b8372088c1e4d6d/LabVIEW_Extensions_Small.png?raw=true) [BenjaminR's LabVIEW Extensions](https://benji667.github.io/LabVIEW_NPOI/about)
 
 Several LabVIEW IDE features were designed using plugin architecture that let developers to extend their LabVIEW's editor environment with G code.
 
