@@ -1,5 +1,3 @@
-# About Me
-
 ---
 layout: page
 title: About me
