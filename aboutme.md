@@ -1,8 +1,3 @@
----
-layout: page
-title: About me
-subtitle: Know more about me
----
 {% include simple-menu.html %}
 
 I first discovered LabVIEW in 2004, during my studies in instrumentation engineering. Used from LabVIEW 7 to LabVIEW 8.6 to realize projects such as stand-alone instruments controls (over RS-232, RS-485, GPIB), VXI/VME applications, CAN bus monitoring, PXI based industrial control systems.
