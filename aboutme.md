@@ -1,8 +1,10 @@
 ---
 layout: page
 title: About me
-subtitle: Why you'd want to go on a date with me
+subtitle: Know more about me
 ---
+{% include simple-menu.html %}
+
 I first discovered LabVIEW in 2004, during my studies in instrumentation engineering. Used from LabVIEW 7 to LabVIEW 8.6 to realize projects such as stand-alone instruments controls (over RS-232, RS-485, GPIB), VXI/VME applications, CAN bus monitoring, PXI based industrial control systems.
 
 I started at NI in France by providing in-depth technical knowledge to support all NI products and helping customers to understand large application development practices and how to develop high-quality, reliable and/or safe applications using LabVIEW. I was given the chance to participate in localized version of LabVIEW (release 2009 and 2011) testing, verifying and validating. This led me to the R&D software developer at NI in the US where I designed, implemented and maintained LabVIEW based applications within the Academic Software team. At NI I have gained strong skills on the whole LabVIEW platform and also in LVOOP, VI Scripting and the LabVIEW IDE.
