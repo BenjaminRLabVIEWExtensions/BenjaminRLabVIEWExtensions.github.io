@@ -1,0 +1,189 @@
+<html lang="fr">
+	<head>
+		<meta charset="utf-8">
+		<title>Plug-in de Menu Contextuel pour LabVIEW</title>
+		<link href="../assets/styles.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href='https://fonts.googleapis.com/css?family=Playfair Display' rel='stylesheet'>
+	</head>
+	<body style="margin-left: 15;margin-right: 25;font-family: 'Playfair Display">
+	
+		<!-- Document Title -->
+		<h1 style="font-size: 2.5em; text-align: center"><span style="color: #474747;">Plug-in de Menu Contextuel pour LabVIEW</span></h1>
+		
+		<!-- TOC -->
+		<details style="margin-left: 20">
+			<summary>Table des Matières</summary>
+			<ul>
+				<li><a href="#overview">Généralité</a></li>
+				<ul>
+					<li><a href="#how-does-it-work">Comment ça marche ?</a></li>
+					<li><a href="#anatomy">L'anatomie d'un plug-in de Menu Contextuel pour LabVIEW</a></li>
+				</ul>
+				<li><a href="#create-your-own">Créer son propre plug-in de menu contextuel</a></li>
+				<ul>
+					<li><a href="#get-started">Comment commencer?</a></li>
+					<li><a href="#affected-items">Éléments concernés</a></li>
+					<li><a href="#builder-vi">VI Constructeur</a></li>
+					<li><a href="#vi-execute">VI Exécuter</a></li>
+				</UL>
+			</ul>
+		</details>
+		
+		<h2 id="overview"><span style="background-color: #ffffff; color: #474747;">Généralité</span></h2>
+		<p style="text-align: justify;">Avec LabVIEW 2015 est apparu la possibilité d'ajouter des éléments personnalisés aux menus contextuels (c'est-à-dire aux menus de clic droit) des objets de la face-avant et du diagramme, en utilisant du code G. Cela vous permet de personnaliser votre éditeur LabVIEW, en utilisant du code G, afin d’ajouter de nouveaux éléments de menu, de réorganiser ou remplacer des éléments de menu existants et manipuler des éléments de menu (activer/désactiver, cocher/décocher, ...).</p>
+		<p style="text-align: justify;">Les menus contextuels de LabVIEW sont accessibles à partir des faces-avant et des diagrammes lors de l’édition et uniquement à partir des diagrammes lors de l'exécution. A l'exécution, le menu contextuel des face-avant utilise une autre technologie, que vous connaissez peut-être déjà sous le nom de Menu contextuel (Run-Time Menu), fichiers *.rtm.</p>
+		<h3 id="how-does-it-work"><span style="background-color: #ffffff; color: #474747;">Comment ça marche ?</span></h3>
+		<p style="text-align: justify;">Au démarrage, LabVIEW recherche et charge les plug-ins de menu contextuel à partir de LLB présent à certains emplacements spécifiques.</p>
+		<p>Il existe 2 types de plug-ins se situant dans des emplacements différents :</p>
+		<ul>
+			<li> Plug-in spécifique à la version : utilisé uniquement par une seule version de LabVIEW.
+				<ul>
+					<li>Pour les plug-ins affectant les objets de la face-avant et du diagramme à l'édition, utilisez le dossier <em>&lt;répertoire d'installation de LabVIEW&gt;\resource\plugins\PopupMenus\edit time panel and diagram</em></li>
+					<li> Pour les plug-ins qui affectent les objets de diagramme a l’exécution, utilisez le dossier <em>&lt;répertoire d'installation de LabVIEW&gt;\resource\plugins\PopupMenus\run time</em></li>
+				</ul>
+			</li>
+			<li>Plug-in indépendant de la version : partagé entre toutes les versions de LabVIEW.
+				<ul>
+					<li>Pour les plug-ins affectant les objets de la face-avant et du diagramme à l'édition, utilisez le dossier <em>&lt;LabVIEW Data&gt;\PopupMenus\edit time panel and diagram diagram</em></li>
+					<li>Pour les plug-ins qui affectent les objets de diagramme a l'exécution, utilisez le dossier <em>&lt;LabVIEW Data&gt;\PopupMenus\run time</em></li>
+				</ul>
+			</li>
+		</ul>
+		<p>Si deux plug-ins ont le même nom, LabVIEW donnera la priorité au plug-in dans le répertoire &lt;répertoire d'installation de LabVIEW&gt;\resource\plugins\PopupMenus et n'exécutera pas l'autre.</p>
+		<p>Par défaut l’emplacement du &lt;répertoire d'installation de LabVIEW&gt; est :</p>
+		<ul>
+			<li>Sous Windows: C:\Program Files xx\National Instruments\LabVIEW 20xx\</li>
+			<li>Sous Mac OS: /Applications/National Instruments/LabVIEW 20XX 64-bit/</li>
+		</ul>
+		<p>Par default l'emplacement du répertoire &lt;LabVIEW Data&gt; est:</p>
+		<ul>
+			<li>Sous Windows: C:\Users\Username\Documents\LabVIEW Data</li>
+			<li>Sous Mac OS: /Users/Username/Documents/LabVIEW Data/</li>
+		</ul>
+		<h3 id="anatomy"><span style="color: #000000;">L'anatomie d'un plug-in LabVIEW Shortcut</span></h3>
+		<p>Un plug-in de menu contextuel contient obligatoirement 3 composantes principales:</p>
+		<ul>
+			<li>La définition de type Éléments concernés (<em><strong>Affected Items</strong></em>) : spécifiant les classes d'objets sur lesquelles le plug-in fonctionne.</li>
+			<li>Un VI Constructeur (<em><strong>Builder</strong></em> <em>VI</em>) : ajoutant/modifiant/supprimant des éléments de menu. Appelé lors de la construction du menu contextuel.</li>
+			<li>Un VI Exécuter (<em><strong>Execute</strong></em>) : exécutant le code de script pour effectuer les opérations du plug-in. Appelé lorsque l’utilisateur a sélectionné le menu du plug-in.</li>
+		</ul>
+		<p>Un plug-in de menu contextuel doit être enregistré dans une LLB afin d'être chargé par LabVIEW au lancement. Les LLB permettent un chargement rapide de la hiérarchie du VI et une distribution facile avec un seul fichier. Vous pouvez placer d’autres VIs utiles dans la LLB ou dans un sous-répertoire (ils seront ignorés par LabVIEW lors de la recherche de plug-ins).</p>
+		<h2 id="create-your-own"><span style="color: #474747;">Créer son propre plug-in de menu contextuel</span></h2>
+		<h3 id="get-started"><span style="color: #474747;">Comment commencer?</span></h3>
+		<p>Lorsque vous créez un plug-in de menu contextuel, vous passerez par 3 étapes :</p>
+		<ul>
+			<li>Spécifier les objets affectés par le plug-in.</li>
+			<li>Déterminer comment les éléments personnalisés apparaîtront dans le menu contextuel.</li>
+			<li>Modifier ce que plug-in exécute lorsque l’utilisateur sélectionne l'élément personnalisé.</li>
+		</ul>
+		<p>LabVIEW propose un utilitaire pour nous guider dans la création de nouveaux plug-ins de menu contextuel.</p>
+		<p>Ouvrez le VI Create Shortcut Menu Plug-In From Template, situé dans le dossier <répertoire d'installation de LabVIEW>\resource\plugins\PopupMenus\, et remplissez les différents champs, puis lancer l’exécution du VI.</p>
+		<p><img src="./img/CreateLvMenusFromTemplate.png" alt="" class="center" title="Créer un Menu Contextuel à partir d'un modèle"/></p>
+		<p>Vous devez entrer le nom de votre plug-in, spécifier si le plug-in de menu contextuel affecte les menus contextuels à l’édition ou à l'exécution, et éventuellement cocher/décocher Ouvrir les VIs de plug-in après la création, avant d'exécuter le VI.</p>
+		<p>Cet utilitaire génère la LLB, avec les 3 composantes principales d'un plug-in Shortcut Menu, correctement nommés et dans le bon emplacement.</p>
+		<p>Utilisons un exemple réel pour illustrer le processus de création d’un plug-in de menu contextuel dans LabVIEW. Imaginons que nous souhaitions implémenter un plug-in de menu contextuel, appelé myPlugIn, qui modifiera la couleur d'arrière-plan des commandes numériques et des constantes numériques.</p>
+		<h3 id="affected-items"><span style="color: #474747;"><em>Éléments concernés</em></span></h3>
+		<p>Tout d'abord, nous devons spécifier les objets de la face-avant ou du diagramme sur lesquels notre plug-in fonctionnera en modifiant la définition de type <strong> Éléments concernés</strong>.</p>
+		<p><img src="./img/myPlugInTypeDef.png" alt="Affected Item" class="center" title="Addected Items" style="width:35%;"/></p>
+		<p>Ce Typedef, contient un cluster de tableaux de Refnums du VI Server, représente les objets sélectionnés des types spécifiques.</p>
+		<p>Vous pouvez ajouter un objet en ajoutant un tableau d'un type de refnum, supprimer un objet en supprimant un tableau ou choisir un objet différent en cliquant avec le bouton droit sur un tableau >> "Sélectionner une classe de VI Server" et en sélectionnant le type de refnum souhaité sous le Hiérarchie générique.</p>
+		<p>Pour répondre à nos exigences myPlugIn, les éléments affectés doivent avoir 2 tableaux, un pour les objets de contrôle numérique et un pour les objets de constante numérique. Ensuite, nous avons le Typedef suivant :</p>
+		<p><img src="./img/myPlugInTypeDef_Specified.png" alt="Affected Items myPlugIn" class="center" title="Affected Items myPlugIn" style="width:35%;"/></p>
+		<p>En fonction des types d'objets définis dans le Typedef Éléments affectés, LabVIEW exécute un ensemble spécifique de VIs sur un clic droit donné. Dans notre cas, notre VI Builder sera appelé à la suite d’un clic droit sur les commandes numériques de la face-avant et sur les constantes numériques du diagramme.</p>
+		<div class="warning-box info">
+			<div class="icon"><span><br><br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/OOjs_UI_icon_lightbulb-progressive.svg/30px-OOjs_UI_icon_lightbulb-progressive.svg.png?20190602162807" width="17" height="17" /> Remark</span></div>
+			<div class="text">
+				<ul>
+					<li>Vous pouvez déconnecter les "éléments concernés" du typedef pour accélérer le chargement du plug-in. Le typedef n'est là que pour vous aider à garder ce VI et le VI d'exécution utilisant le même type.</li>
+					<li>N'incluez que les classes les plus spécifiques affectées par votre plugin.</li>
+				</ul>
+			</div>
+		</div>
+		<h3 id="builder-vi"><span style="color: #474747;">VI Constructeur</span></h3>
+		<p>Maintenant, nous devons dire à LabVIEW quels éléments ajouter, basculer ou supprimer du menu contextuel.</p>
+		<p><img src="./img/myPlugInBuilder.png" alt="Builder VI" style="width:85%;" class="center" title="Builder VI"/></p>
+		<p>Dans le VI Constructeur (Builder), chaque élément de menu est décrit par :</p>
+		<ul>
+			<li><em>Menu Item Display Name</em>: correspond au texte affiché dans le menu contextuel. S'il est vide, cela ajoute une barre de séparation. Par défaut, le nom d'affichage de l'élément est le nom du VI Builder (sans l'extension de fichier). Changeons-le en "Changer la couleur d'arrière-plan", ce qui aide l'utilisateur final à savoir l’action qui s’exécutera lors de la sélection de cet élément.</li>
+			<li><em>Menu Item Tag Suffix</em>_: est utilisé lorsque vous affectez plusieurs éléments de menu dans un seul plug-in.</li>
+			<li><em>Path To Execution VI</em>: est le chemin du VI que LabVIEW lancera si l'utilisateur final sélectionne cette entrée.</li>
+			<li><em>Transaction Control</em> &mdash; indique à LabVIEW d'ajouter ou non une option Édition > Annuler pour l'opération effectuée, lorsque l'élément est sélectionné, dans le VI de l’utilisateur.</li>
+			<li><em>Position In Menu</em> &mdash; indique où (avant, à la place de, après, dans le sous-menu), par rapport à la balise d'élément de menu spécifiée, vous souhaitez que votre élément apparaisse dans le menu. Par défaut, l'élément de menu se trouvera juste avant l’entrée "Propriétés" ou sera le dernier élément du menu si "Propriétés" n’existe pas dans le menu.</li>
+			<li><em>Checkmark Status</em>: spécifie s'il faut activer ou désactiver l'élément sélectionné dans le menu.</li>
+			<li><em>Enabled Status</em>: spécifie s'il faut placer une coche à côté de l'élément dans le menu.</li>
+		</ul>
+		<p>Avec les entrées du VI nous récupérons des informations sur la sélection de l'utilisateur:</p>
+		<ul>
+			<li>User VI Ref: refnum du VI sur lequel l'utilisateur a cliqué avec le bouton droit.</li>
+			<li>Refnum menu: refnum du menu contextuel des éléments concernés.</li>
+			<li>Affected Items: liste des objets affectés par le plug-in, à partir de la sélection de l'utilisateur.</li>
+			<li>Remaining Items: liste de tous les autres objets de la sélection de l'utilisateur.</li>
+			<li>Is Multi-select?: indique si l'utilisateur a sélectionné un seul objet ou plusieurs objets.</li>
+			<li>Mouse Position: coordonnées de l'endroit où l'utilisateur a cliqué.</li>
+		</ul>
+		<p>Basé sur les informations de la sélection de l'utilisateur il est possible d’implémenter certaines logiques pour indiquer à LabVIEW quels entrées ajouter au menu.</p>
+		<p>Revenons à notre exemple, voici les règles que nous allons suivre :</p>
+		<ul>
+			<li>S'il s'agit d'une sélection d'objet unique, l'élément de menu se trouvera après l'entrée "Remplacer".</li>
+			<li>S'il s'agit d'une sélection d'objets multiples, elle se trouvera après l'entrée "Éléments visibles".</li>
+			<li>Si la sélection contient des terminaux de type contrôle, nous ne voulons pas afficher cette entrée au menu.</li>
+		</ul>
+		<div class="warning-box">
+			<div class="icon">
+				<span><br><br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/OOjs_UI_icon_alert-yellow.svg/30px-OOjs_UI_icon_alert-yellow.svg.png" alt="cry" width="17" height="17" /> Mise en garde</span>
+			</div>
+			<div class="text">
+				<ul>
+					<li>Ne modifiez pas les commandes affectées aux terminaux du connecteur du VI Builder. Pour charger et exécuter les plug-ins, LabVIEW a besoin que les noms, types et connexions soient les mêmes que ceux prédéfinis.</li>
+					<li>Le nom de ce VI doit correspondre au nom de la LLB – seul diffère leurs extensions.</li>
+					<li>Ce VI doit avoir le débogage désactivé, sinon il sera ignoré au chargement des plug-ins.</li>
+					<li>Pour tous les éléments du menu, "tag suffix + file name of this VI" ne doit pas avoir plus de 240 caractères.</li>
+				</ul>
+			</div>
+		</div>
+		<p>&nbsp;</p>
+		<div class="warning-box info">
+			<div class="icon"><span><br><br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/OOjs_UI_icon_lightbulb-progressive.svg/30px-OOjs_UI_icon_lightbulb-progressive.svg.png?20190602162807" width="17" height="17" /> Remarque</span></div>
+			<div class="text">
+				<ul>
+					<li>Assurez-vous que le VI Builder est léger pour éviter le temps de chargement du menu contextuel.</li>
+					<li>Si votre élément de menu lance une boîte de dialogue, terminez le texte de l'élément par "..."</li>
+					<li>Tous les contrôles de ce panneau, à l'exception des "Affected Items", sont verrouillés pour éviter toutes modifications accidentelles.</li>
+					<li>Les VIs Builder restent en mémoire après la première exécution, il est donc possible d’utiliser des VIs Globaux :
+						<ul>
+							<li>Pour conserver les données entre les exécutions du plug-in.</li>
+							<li>Pour partager des données entre le VI de construction et le VI d'exécution.</li>
+						</ul>
+					</li>
+					<li>Comme les outils de débogage (sondes, points d'arrêt, etc.) ne peuvent pas être utilisés dans le VI Builder, préférez l’utilisation de fonctions telles que<a href="https://zone.ni.com/reference/fr-XX/help/371361R-0114/lvconcepts/fileio_datalog_files/">écrire dans des fichiers journaux</a>, <a href="https://zone.ni.com/reference/fr-XX/help/371361R-0114/glang/one_button_dialog_box/">boite de dialogue à un bouton</a>, <a href="https://forums.ni.com/t5/Hidden-Gems-in-vi-lib/New-Hidden-Gems-in-LabVIEW-2017/td-p/3621569">Debug Write.vim</a>, etc.</li>
+				</ul>
+			</div>
+		</div>
+		<h3 id="vi-execute"><span style="--fa-primary-color: blue;">VI Exécuter</span></h3>
+		<p>Passons à l'étape finale et définissons les actions que LabVIEW exécutera lorsque l’utilisateur sélectionne un élément personnalisé dans le menu local.</p>
+		<p><img src="./img/myPlugInExecute.png" alt="Execute VI" style="width:65%;" class="center" title="Execute VI"/></p>
+		<p>Comme indiqué ci-dessus, LabVIEW charge les plug-ins de menu contextuel au démarrage, il est donc nécessaire de redémarrer LabVIEW pour que les modifications soient prises en compte et que votre plug-in apparaisse dans le menu contextuel.</p>
+		<div class="warning-box">
+			<div class="icon">
+				<span><br><br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/OOjs_UI_icon_alert-yellow.svg/30px-OOjs_UI_icon_alert-yellow.svg.png" alt="cry" width="17" height="17" /> Mise en garde</span>
+			</div>
+			<div class="text">
+				<ul>
+					<li>Soyez prudent lors de la lecture de la propriété <strong>Type de données</strong>: accéder aux types de données d’un objet dans des instances d'application différentes peut amener des problèmes. Si vous avez besoin de lire un type de données, faites-le dans l'instance d'application du VI propriétaire ou utilisez la fonction<a href="https://zone.ni.com/reference/fr-XX/help/371361R-0114/glang/request_dealloc/"><strong>Demander une désallocation</strong></a>.</li>
+				</ul>
+			</div>
+		</div>
+		<p>&nbsp;</p>
+		<div class="warning-box info">
+			<div class="icon"><span><br><br><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/OOjs_UI_icon_lightbulb-progressive.svg/30px-OOjs_UI_icon_lightbulb-progressive.svg.png?20190602162807" width="17" height="17" /> Remarque</span></div>
+			<div class="text">
+				<ul>
+					<li>Assurez-vous que le VI constructeur est léger pour éviter un temps de chargement du menu contextuel trop long.</li>
+					<li>Tous les contrôles de ce panneau, à l'exception des "Affected Items", sont verrouillés pour éviter toutes modifications accidentelles.</li>
+					<li>Les outils de débogage peuvent être utilisés dans le VI Exécuter.</li>
+					<li>Il est possible de recharger des plug-ins sans redémarrer LabVIEW, en appelant la méthode <a href="https://zone.ni.com/reference/fr-XX/help/371361R-0114/lvprop/application_menus058refresh/">Menus:Rafraîchir</a>. Vous pouvez utiliser le VI : <em>&lt;répertoire d'installation de LabVIEW&gt;\</em>resource\plugins\PopupMenus\support\Refresh Menus.vi qui appel cette methode.</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html> 
