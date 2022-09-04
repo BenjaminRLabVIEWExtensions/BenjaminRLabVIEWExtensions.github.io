@@ -23,6 +23,4 @@ Using the providing mechanisms, to augment the editor, I have been able to imple
 - [**Insert LVClass Property Node**](https://github.com/BenjaminRLabVIEWExtensions/Insert-LVClass-Property-Node): shortcut menu plug-In to insert LVClass Property Node (Read or Write) or display dialog to choose which property to create with which access (Read, Write, Read and Write).
 - [**LabVIEW Shortcut Provider**](https://github.com/BenjaminRLabVIEWExtensions/lvshortcut_provider): ability to create new Shorcut item from the popup menu that appears when My Computer is right-clicked.
 
-<div>
-	<iframe id="myIframe" src="./doc-en/lv_shortcut_menu.html" frameborder="0" marginwidth="0" marginheight="0" width="100%" height="100%" scrolling="no"></iframe>
-</div>
+[LV Shortcut Doc](lv_shortcut_menu_container.html)
